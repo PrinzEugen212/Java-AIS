@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="691.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.MainController">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" onAction="#onCards" text="Навигация">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onCards" text="Карточки" />
+                  <MenuItem mnemonicParsing="false" onAction="#onDBView" text="Обозреватель БД" />
+                  <MenuItem mnemonicParsing="false" onAction="#onReport" text="Отчёты" />
+               </items></Menu>
+          <Menu mnemonicParsing="false" text="Добавить">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onAddProcedure" text="Процедуру" />
+                  <MenuItem mnemonicParsing="false" onAction="#onAnimal" text="Питомца" />
+                  <MenuItem mnemonicParsing="false" onAction="#onClient" text="Клиента" />
+                  <MenuItem mnemonicParsing="false" onAction="#onEmployee" text="Сотрудника" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <HBox fx:id="hbMainPanel" alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+          <fx:include source="dataBase-view.fxml" />
+      </HBox>
+   </children>
+</VBox>

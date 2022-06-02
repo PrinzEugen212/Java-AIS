@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="100.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.Animal.AddAnimalController">
+   <children>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="551.0" spacing="5.0">
+         <children>
+            <VBox>
+               <children>
+                  <VBox spacing="5.0">
+                     <children>
+                        <Label text="Хозяин*" />
+                        <ComboBox fx:id="cbClients" prefWidth="150.0" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox layoutX="20.0" layoutY="20.0" spacing="5.0">
+                     <children>
+                        <Label text="Кличка*" />
+                        <TextField fx:id="tfName" />
+                     </children>
+                  </VBox>
+                  <VBox layoutX="20.0" layoutY="74.0" spacing="5.0">
+                     <children>
+                        <Label text="Вид*" />
+                        <TextField fx:id="tfType" />
+                     </children>
+                  </VBox>
+                  <VBox layoutX="20.0" layoutY="128.0" spacing="5.0">
+                     <children>
+                        <Label text="Порода" />
+                        <TextField fx:id="tfBreed" />
+                     </children>
+                  </VBox>
+                  <VBox layoutX="20.0" layoutY="181.0" spacing="5.0">
+                     <children>
+                        <Label text="Дата рождения" />
+                        <DatePicker fx:id="dpBirthDate" />
+                     </children>
+                  </VBox>
+                  <VBox layoutX="20.0" layoutY="342.0" spacing="5.0">
+                     <children>
+                        <Label text="Пол" />
+                        <ComboBox fx:id="cbGender" prefWidth="150.0" />
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+            <HBox spacing="20.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onAdd" text="Добавить" />
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCancel" text="Отмена" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox spacing="20.0">
+         <children>
+            <ImageView fx:id="ivPhoto" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            <Button mnemonicParsing="false" onAction="#onChoosePhoto" prefHeight="26.0" prefWidth="218.0" text="Выбрать фотографию" />
+            <Button mnemonicParsing="false" onAction="#onDeletePhoto" prefHeight="26.0" prefWidth="218.0" text="Очистить" />
+         </children>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</HBox>

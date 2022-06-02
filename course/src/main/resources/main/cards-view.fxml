@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="293.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.CardsController">
+   <children>
+      <AnchorPane prefHeight="63.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="68.0" layoutY="5.0" text="Хозяин:" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="0.0" />
+            <ComboBox fx:id="cbClients" layoutX="14.0" layoutY="24.0" onAction="#onClientSelect" prefWidth="150.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="24.0" />
+            <Button layoutX="177.0" layoutY="24.0" mnemonicParsing="false" onAction="#onCancelSort" text="х" AnchorPane.leftAnchor="177.0" AnchorPane.topAnchor="24.0" />
+            <Label layoutX="303.0" layoutY="28.0" text="Кличка" AnchorPane.leftAnchor="303.0" AnchorPane.topAnchor="28.0" />
+            <Label layoutX="426.0" layoutY="28.0" text="Вид" AnchorPane.leftAnchor="415.0" AnchorPane.topAnchor="30.0" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </AnchorPane>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox fx:id="vbCards">
+               <fx:include source="card-view.fxml" />
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+   <padding>
+      <Insets left="20.0" />
+   </padding>
+</VBox>
