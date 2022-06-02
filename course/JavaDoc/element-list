@@ -1,0 +1,9 @@
+module:com.example.course
+main
+main.controllers
+main.controllers.Animal
+main.controllers.Client
+main.controllers.Employee
+main.controllers.Procedure
+main.controllers.Visit
+models
