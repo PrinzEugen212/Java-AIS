@@ -35,6 +35,8 @@ public class AuthorizationController {
             fxmlLoader.setLocation(Main.class.getResource("hello-view.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(fxmlLoader.load(), 900, 600));
+            stage.setTitle("АИС Ветеринарной клиники");
+            stage.setResizable(false);
             MainController helloController = fxmlLoader.getController();
             helloController.employee = employee;
             helloController.onCards(null);

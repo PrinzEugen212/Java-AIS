@@ -80,9 +80,8 @@ public class CardsController{
                 vbCards.getChildren().add(pane);
             }
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error").show();
+            new Alert(Alert.AlertType.ERROR, "Что-то пошло не так").show();
         }
-
     }
 
     public void initialize() {
@@ -91,7 +90,7 @@ public class CardsController{
             cbClients.setItems(FXCollections.observableArrayList(clients.stream().map(c -> c.FullName).toList()));
             setCards(null);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error").show();
+            new Alert(Alert.AlertType.ERROR, "Что-то пошло не так").show();
         }
     }
 }

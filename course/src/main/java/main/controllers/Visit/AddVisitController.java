@@ -13,9 +13,9 @@ import models.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Обработчик формы добавления приёма
@@ -43,10 +43,12 @@ public class AddVisitController {
 
     /**
      * Начальная инициализация формы
+     *
      * @param employee работник, авторизованный в системе
-     * @param animal питомец, для которого записывается приём
+     * @param animal   питомец, для которого записывается приём
      */
     public void initialize(Employee employee, Animal animal) throws SQLException, IOException {
+
         this.animal = animal;
         this.employee = employee;
         tfAnimal.setText(animal.Name);
@@ -67,18 +69,37 @@ public class AddVisitController {
         cbHelper.setItems(FXCollections.observableArrayList(employees.stream().map(c -> c.Name).toList()));
     }
 
-    public void onHistory(ActionEvent actionEvent) {
-    }
-
-    public void onAdd(ActionEvent actionEvent) throws SQLException {
+    public void onAdd(ActionEvent actionEvent) throws SQLException, ParseException {
+        if (taAssignment.getText().length() == 0 || taDiagnosis.getText().length() == 0) {
+            new Alert(Alert.AlertType.ERROR, "Заполните все необходимые поля").show();
+            return;
+        }
         String helper = (String) cbHelper.getSelectionModel().getSelectedItem();
-        Employee helperEmployee = employees.stream().filter(e -> e.Name == helper).findAny().orElse(null);
+        Employee helperEmployee = employees.stream().filter(e -> Objects.equals(e.Name, helper)).findAny().orElse(null);
+        int helperID = 0;
+        if (helperEmployee != null) {
+            helperID = helperEmployee.ID;
+        }
+        Date date = null;
+        try {
+            date = java.sql.Date.valueOf(dpDate.getValue());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            String[] time = tfTime.getText().split(":");
+            cal.set(Calendar.HOUR, Integer.parseInt(time[0]));
+            cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
+            cal.set(Calendar.SECOND, 0);
+            date = cal.getTime();
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Ошибка при обработке даты или времени").show();
+            return;
+        }
         Visit visit = new Visit(
                 animal.ID,
                 employee.ID,
-                helperEmployee.ID,
+                helperID,
                 client.ID,
-                java.sql.Date.valueOf(dpDate.getValue()),
+                date,
                 taDiagnosis.getText(),
                 taAssignment.getText(),
                 cost
@@ -92,26 +113,32 @@ public class AddVisitController {
      */
     public void onProcedures(ActionEvent actionEvent) {
         String procedureName = (String) cbProcedures.getSelectionModel().getSelectedItem();
-        if(procedureName == null){
+        if (procedureName == null) {
             return;
         }
         Procedure procedure = procedures.stream().filter(p -> Objects.equals(p.Name, procedureName)).findAny().orElse(null);
-        performedProcedures.add(procedure);
-        cost += procedure.Cost;
-        lCost.setText(String.valueOf(cost));
-        lbProcedures.setItems(FXCollections.observableArrayList(performedProcedures.stream().map(p -> p.Name).toList()));
+        if (lbProcedures.getItems().contains(String.format("%s: %d", procedure.Name, procedure.Cost)) == false) {
+            performedProcedures.add(procedure);
+            cost += procedure.Cost;
+            lCost.setText(String.valueOf(cost));
+
+            lbProcedures.getItems().add(String.format("%s: %d", procedure.Name, procedure.Cost));
+        }
     }
 
     /**
      * При нажатии на процедуру в списке проведённых процедур убирает её
      */
     public void onLVMouseClick(MouseEvent mouseEvent) {
-        String procedureName = (String) cbProcedures.getSelectionModel().getSelectedItem();
-        Procedure procedure = procedures.stream().filter(p -> Objects.equals(p.Name, procedureName)).findAny().orElse(null);
+        if (mouseEvent.getClickCount() != 2) {
+            return;
+        }
+        String procedureName = (String) lbProcedures.getSelectionModel().getSelectedItem().toString().split(":")[0];
+        Procedure procedure = performedProcedures.stream().filter(p -> Objects.equals(p.Name, procedureName)).findAny().orElse(null);
         performedProcedures.remove(procedure);
         cost -= procedure.Cost;
         lCost.setText(String.valueOf(cost));
-        lbProcedures.setItems(FXCollections.observableArrayList(performedProcedures.stream().map(p -> p.Name).toList()));
+        lbProcedures.getItems().remove(String.format("%s: %d", procedure.Name, procedure.Cost));
         cbProcedures.getSelectionModel().select(-1);
     }
 

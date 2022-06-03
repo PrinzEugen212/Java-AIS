@@ -4,10 +4,12 @@ import javafx.scene.control.Alert;
 import models.*;
 
 import java.sql.*;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -21,7 +23,7 @@ public class DB {
     private static Connection connection = null;
     private static final String connectionUrl = "jdbc:mysql://localhost:3306/VetClinic";
     private static final String user = "root";
-    private static final String password = "root";
+    private static final String password = "root_root";
     private static final String driver = "com.mysql.cj.jdbc.Driver";
 
     /**
@@ -134,18 +136,24 @@ public class DB {
             statement.setInt(1, visit.IDAnimal);
             statement.setInt(2, visit.IDEmployee);
             statement.setInt(3, visit.IDClient);
-            statement.setDate(4, (Date) visit.Date);
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+            String strDate = dateFormat.format(visit.Date);
+            statement.setString(4, strDate);
             statement.setString(5, visit.Diagnosis);
             statement.setString(6, visit.Assignment);
-            statement.setInt(7, visit.IDHelperEmployee);
+            if (visit.IDHelperEmployee == 0){
+                statement.setNull(7, Types.INTEGER);
+            }
+            else {
+                statement.setInt(7, visit.IDHelperEmployee);
+            }
             statement.setInt(8, visit.TotalCost);
             statement.execute();
             ResultSet res = statement.getGeneratedKeys();
             if (res.next()) {
                 ID = res.getInt(1);
             }
-
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -174,7 +182,7 @@ public class DB {
      * @param procedure Процедура, которую нужно изменить
      */
     public static void changeProcedure(Procedure procedure) {
-        String sqlExpression = "UPDATE ProceduresList SET Name = ?, ? = @cost WHERE ID = ?";
+        String sqlExpression = "UPDATE ProceduresList SET Name = ?, Cost = ? WHERE ID = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sqlExpression);
@@ -214,7 +222,7 @@ public class DB {
      * @param employee Работник, которого нужно добавить
      */
     public static void changeEmployee(Employee employee) {
-        String sqlExpression = "UPDATE Employees SET Name = ?, Login=?, Password=?, Phone=?, Post=?, Speciality=?, Admin=?, CanHelp=? WHERE ID = ?";
+        String sqlExpression = "UPDATE Employees SET Name = ?, Login=?, Password=?, Phone=?, Post=?, Speciality=?, IsAdmin=?, CanHelp=? WHERE ID = ?";
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sqlExpression);
@@ -244,9 +252,10 @@ public class DB {
             statement.setString(1, client.FullName);
             statement.setString(2, String.valueOf(client.BirthDate));
             statement.setString(3, client.Phone);
+            statement.setInt(4, client.ID);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
     /**
@@ -263,10 +272,17 @@ public class DB {
             statement.setInt(1, visit.IDAnimal);
             statement.setInt(2, visit.IDEmployee);
             statement.setInt(3, visit.IDClient);
-            statement.setDate(4, (Date) visit.Date);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+            String strDate = dateFormat.format(visit.Date);
+            statement.setString(4, strDate);
             statement.setString(5, visit.Diagnosis);
             statement.setString(6, visit.Assignment);
-            statement.setInt(7, visit.IDHelperEmployee);
+            if (visit.IDHelperEmployee == 0){
+                statement.setNull(7, Types.INTEGER);
+            }
+            else {
+                statement.setInt(7, visit.IDHelperEmployee);
+            }
             statement.setInt(8, visit.TotalCost);
             statement.setInt(9, visit.ID);
             statement.execute();
@@ -280,16 +296,16 @@ public class DB {
                 try {
                     for (Procedure procedure : procedures) {
                         statement = connection.prepareStatement(sqlExpression);
-                        statement.setInt(1, procedure.ID);
+                        statement.setInt(1, visit.ID);
                         statement.setString(2, procedure.Name);
                         statement.execute();
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         connection.commit();
         connection.setAutoCommit(true);
@@ -593,7 +609,7 @@ public class DB {
         }
     }
     private static ResultSet getEmployeesRep() {
-        String sqlExpression = "SELECT ID ,Name as Имя, Login as Логин, Password as Пароль, " +
+        String sqlExpression = "SELECT ID ,Name as Имя, Login as Логин, " +
                 "Phone as Телефон, Post as Должность, Speciality as Специализация, IsAdmin as Администратор, " +
                 "CanHelp as Помощник FROM Employees";
         try {
@@ -605,7 +621,8 @@ public class DB {
 
     }
     private static ResultSet getVisitsRep() {
-        String sqlExpression = "SELECT Visits.ID, Animals.Name as Питомец, Emp.Name as Врач, Visits.Date, Clients.FullName, Visits.Diagnosis, Visits.Assignment, Helper.Name as Помощник, Visits.TotalCost as Стоимость " +
+        String sqlExpression = "SELECT Visits.ID, Animals.Name as Питомец, Emp.Name as Врач, Visits.Date as Дата, Clients.FullName as Клиент, " +
+                "Visits.Diagnosis as Диагноз, Visits.Assignment as Назначение, Helper.Name as Помощник, Visits.TotalCost as Стоимость " +
                 "FROM Visits " +
                 "JOIN Animals on Visits.IDAnimal = Animals.ID " +
                 "JOIN Employees as Emp on Visits.IDEmployee = Emp.ID " +
@@ -646,7 +663,8 @@ public class DB {
      * @return набор записей из базы данных. Может быть null
      */
     public static ResultSet getEmployeeRep(int idEmployee, boolean main, boolean helper, java.util.Date minDate, java.util.Date maxDate) {
-        String sqlExpression = "SELECT Visits.ID, Animals.Name as Питомец, Emp.Name as Врач, Visits.Date, Clients.FullName, Visits.Diagnosis, Visits.Assignment, Helper.Name as Помощник, Visits.TotalCost as Стоимость " +
+        String sqlExpression = "SELECT Visits.ID, Animals.Name as Питомец, Emp.Name as Врач, Visits.Date as Дата," +
+                " Clients.FullName as Клиент, Visits.Diagnosis as Диагноз, Visits.Assignment as Назначение, Helper.Name as Помощник, Visits.TotalCost as Стоимость " +
                 "FROM Visits " +
                 "JOIN Animals on Visits.IDAnimal = Animals.ID " +
                 "JOIN Employees as Emp on Visits.IDEmployee = Emp.ID " +

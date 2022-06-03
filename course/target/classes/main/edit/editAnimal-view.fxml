@@ -18,7 +18,7 @@
                <children>
                   <VBox spacing="5.0">
                      <children>
-                        <Label text="Хозяин" />
+                        <Label text="Хозяин*" />
                         <ComboBox fx:id="cbClients" prefWidth="150.0" />
                      </children>
                      <VBox.margin>
@@ -27,13 +27,13 @@
                   </VBox>
                   <VBox layoutX="20.0" layoutY="20.0" spacing="5.0">
                      <children>
-                        <Label text="Кличка" />
+                        <Label text="Кличка*" />
                         <TextField fx:id="tfName" />
                      </children>
                   </VBox>
                   <VBox layoutX="20.0" layoutY="74.0" spacing="5.0">
                      <children>
-                        <Label text="Вид" />
+                        <Label text="Вид*" />
                         <TextField fx:id="tfType" />
                      </children>
                   </VBox>
@@ -45,7 +45,7 @@
                   </VBox>
                   <VBox layoutX="20.0" layoutY="181.0" spacing="5.0">
                      <children>
-                        <Label text="Дата рождения" />
+                        <Label text="Дата рождения*" />
                         <DatePicker fx:id="dpBirthDate" />
                      </children>
                   </VBox>

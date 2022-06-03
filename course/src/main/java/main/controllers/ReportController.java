@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
  * Контроллер для формы с отчётами
  */
 public class ReportController implements Initializable {
-    private boolean enabled = true;
+    private boolean enabled = false;
     public CheckBox cbEmployee;
     public CheckBox cbDoctor;
     public CheckBox cbHelper;
@@ -34,12 +34,13 @@ public class ReportController implements Initializable {
     public ComboBox cmbEmployee;
 
     public void onEmployee(ActionEvent actionEvent) {
+        cmbEmployee.setDisable(enabled);
+        cbDoctor.setDisable(enabled);
+        cbHelper.setDisable(enabled);
         if (enabled) {
             cmbEmployee.getSelectionModel().select(-1);
-            cmbEmployee.setEditable(false);
             enabled = !enabled;
         } else {
-            cmbEmployee.setEditable(true);
             enabled = !enabled;
         }
     }
@@ -73,7 +74,7 @@ public class ReportController implements Initializable {
         tvTable.getItems().clear();
         int count = set.getMetaData().getColumnCount();
         for (int i = 1; i <= count; i++) {
-            TableColumn<List<StringProperty>, String> column = new TableColumn<>(set.getMetaData().getColumnName(i));
+            TableColumn<List<StringProperty>, String> column = new TableColumn<>(set.getMetaData().getColumnLabel(i));
             int finalI = i;
             column.setCellValueFactory(data -> data.getValue().get(finalI - 1));
             tvTable.getColumns().add(column);
@@ -98,7 +99,8 @@ public class ReportController implements Initializable {
             throw new RuntimeException(e);
         }
         cmbEmployee.setItems(FXCollections.observableArrayList(employees.stream().map(c -> c.Name).toList()));
-
+        lCount.setText("0");
+        onEmployee(null);
         cbEmployee.setSelected(true);
     }
 }

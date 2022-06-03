@@ -14,7 +14,7 @@
          <children>
             <VBox layoutX="20.0" layoutY="20.0" spacing="5.0">
                <children>
-                  <Label text="Имя" />
+                  <Label text="Имя*" />
                   <TextField fx:id="tfName" />
                </children>
             </VBox>
@@ -26,7 +26,7 @@
             </VBox>
             <VBox layoutX="20.0" layoutY="128.0" spacing="5.0">
                <children>
-                  <Label text="Дата рождения" />
+                  <Label text="Дата рождения*" />
                   <DatePicker fx:id="dpBirthDate" />
                </children>
             </VBox>

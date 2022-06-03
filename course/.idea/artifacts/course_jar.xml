@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact name="course:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/course_jar</output-path>
+    <root id="root">
+      <element id="archive" name="course.jar">
+        <element id="module-output" name="course" />
+      </element>
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:win:18" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-base:win:18" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:18" />
+      <element id="library" level="project" name="mysql-connector-java-8.0.28" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:18" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-base:18" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:win:18" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:win:18" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:18" />
+    </root>
+  </artifact>
+</component>

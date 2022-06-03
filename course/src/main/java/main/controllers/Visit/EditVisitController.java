@@ -17,9 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,11 +45,14 @@ public class EditVisitController {
     public TextArea taAssignment;
     public ListView lbProcedures;
     public Label lCost;
+
     /**
      * Начальная инициализация формы
+     *
      * @param visit приём который нужно изменить
      */
     public void initialize(Visit visit) throws SQLException, IOException {
+
         this.ID = visit.ID;
         this.animal = DB.getAnimal(visit.IDAnimal);
         this.employee = DB.getEmployee(visit.IDEmployee);
@@ -69,6 +70,9 @@ public class EditVisitController {
         String strDate = dateFormat.format(visit.Date);
         dpDate.setValue(LocalDate.parse(strDate, formatter));
 
+        dateFormat = new SimpleDateFormat("HH:mm");
+        tfTime.setText(dateFormat.format(visit.Date));
+
         procedures = DB.getProcedures();
         cbProcedures.setItems(FXCollections.observableArrayList(procedures.stream().map(c -> c.Name).toList()));
 
@@ -76,13 +80,18 @@ public class EditVisitController {
         employees = employees.stream().filter(e -> e.CanHelp).toList();
         cbHelper.setItems(FXCollections.observableArrayList(employees.stream().map(c -> c.Name).toList()));
         Employee helper = employees.stream().filter(e -> e.ID == visit.IDHelperEmployee).findAny().orElse(null);
-        cbHelper.getSelectionModel().select(helper.Name);
+        if(helper != null){
+            cbHelper.getSelectionModel().select(helper.Name);
+        }
 
         performedProcedures = DB.getProcedures(visit.ID);
-        lbProcedures.setItems(FXCollections.observableArrayList(performedProcedures.stream().map(p -> p.Name).toList()));
-        cost = performedProcedures.stream().map(p->p.Cost).collect(Collectors.summingInt(Integer::intValue));
+        for(Procedure procedure : performedProcedures){
+            lbProcedures.getItems().add(String.format("%s: %d", procedure.Name, procedure.Cost));
+        }
+        cost = performedProcedures.stream().map(p -> p.Cost).collect(Collectors.summingInt(Integer::intValue));
         lCost.setText(String.valueOf(cost));
     }
+
     /**
      * При выборе процедуры в выпадающем списке добавляет её в список проведённых процедур
      */
@@ -92,25 +101,29 @@ public class EditVisitController {
             return;
         }
         Procedure procedure = procedures.stream().filter(p -> Objects.equals(p.Name, procedureName)).findAny().orElse(null);
-        performedProcedures.add(procedure);
-        cost += procedure.Cost;
-        lCost.setText(String.valueOf(cost));
-        lbProcedures.setItems(FXCollections.observableArrayList(performedProcedures.stream().map(p -> p.Name).toList()));
+        if (lbProcedures.getItems().contains(String.format("%s: %d", procedure.Name, procedure.Cost)) == false) {
+            performedProcedures.add(procedure);
+            cost += procedure.Cost;
+            lCost.setText(String.valueOf(cost));
+
+            lbProcedures.getItems().add(String.format("%s: %d", procedure.Name, procedure.Cost));
+        }
     }
+
     /**
      * При нажатии на процедуру в списке проведённых процедур убирает её
      */
     public void onLVMouseClick(MouseEvent mouseEvent) {
-        String procedureName = (String) cbProcedures.getSelectionModel().getSelectedItem();
-        Procedure procedure = procedures.stream().filter(p -> Objects.equals(p.Name, procedureName)).findAny().orElse(null);
+        if (mouseEvent.getClickCount() != 2){
+            return;
+        }
+        String procedureName = (String) lbProcedures.getSelectionModel().getSelectedItem().toString().split(":")[0];
+        Procedure procedure = performedProcedures.stream().filter(p -> Objects.equals(p.Name, procedureName)).findAny().orElse(null);
         performedProcedures.remove(procedure);
         cost -= procedure.Cost;
         lCost.setText(String.valueOf(cost));
-        lbProcedures.setItems(FXCollections.observableArrayList(performedProcedures.stream().map(p -> p.Name).toList()));
+        lbProcedures.getItems().remove(String.format("%s: %d", procedure.Name, procedure.Cost));
         cbProcedures.getSelectionModel().select(-1);
-    }
-
-    public void onHistory(ActionEvent actionEvent) {
     }
 
     public void onCancel(ActionEvent actionEvent) {
@@ -119,18 +132,41 @@ public class EditVisitController {
     }
 
     public void onChange(ActionEvent actionEvent) throws SQLException {
+        if (taAssignment.getText().length() == 0 || taDiagnosis.getText().length() == 0) {
+            new Alert(Alert.AlertType.ERROR, "Заполните все необходимые поля").show();
+            return;
+        }
         String helper = (String) cbHelper.getSelectionModel().getSelectedItem();
-        Employee helperEmployee = employees.stream().filter(e -> e.Name == helper).findAny().orElse(null);
+        Employee helperEmployee = employees.stream().filter(e -> Objects.equals(e.Name, helper)).findAny().orElse(null);
+        int helperID = 0;
+        if (helperEmployee != null) {
+            helperID = helperEmployee.ID;
+        }
+        Date date = null;
+        try {
+            date = java.sql.Date.valueOf(dpDate.getValue());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            String[] time = tfTime.getText().split(":");
+            cal.set(Calendar.HOUR, Integer.parseInt(time[0]));
+            cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
+            cal.set(Calendar.SECOND, 0);
+            date = cal.getTime();
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Ошибка при обработке даты или времени").show();
+            return;
+        }
         Visit visit = new Visit(
                 animal.ID,
                 employee.ID,
-                helperEmployee.ID,
+                helperID,
                 client.ID,
-                java.sql.Date.valueOf(dpDate.getValue()),
+                date,
                 taDiagnosis.getText(),
                 taAssignment.getText(),
                 cost
         );
+        visit.ID = ID;
         DB.changeVisit(visit, performedProcedures);
         onCancel(null);
     }

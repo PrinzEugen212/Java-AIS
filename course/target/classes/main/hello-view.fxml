@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="691.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="691.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.MainController">
    <children>
       <MenuBar>
         <menus>
@@ -21,7 +21,7 @@
               <MenuItem mnemonicParsing="false" onAction="#onAddProcedure" text="Процедуру" />
                   <MenuItem mnemonicParsing="false" onAction="#onAnimal" text="Питомца" />
                   <MenuItem mnemonicParsing="false" onAction="#onClient" text="Клиента" />
-                  <MenuItem mnemonicParsing="false" onAction="#onEmployee" text="Сотрудника" />
+                  <MenuItem fx:id="miEmployee" mnemonicParsing="false" onAction="#onEmployee" text="Сотрудника" />
             </items>
           </Menu>
         </menus>

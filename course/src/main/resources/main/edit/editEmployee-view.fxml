@@ -15,7 +15,7 @@
          <children>
             <VBox spacing="5.0">
                <children>
-                  <Label text="Полное имя" />
+                  <Label text="Полное имя*" />
                   <TextField fx:id="tfName" />
                </children>
                <VBox.margin>
@@ -42,7 +42,7 @@
             </VBox>
             <VBox layoutX="20.0" layoutY="181.0" spacing="5.0">
                <children>
-                  <Label text="Должность" />
+                  <Label text="Должность*" />
                   <TextField fx:id="tfPost" />
                </children>
             </VBox>

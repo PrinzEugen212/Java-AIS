@@ -71,6 +71,7 @@ public class CardController {
             controller.setClient(client);
             stage.showAndWait();
             this.controller.onCancelSort(null);
+            this.controller.updateClients();
         } catch (IOException e) {
             e.printStackTrace();
         }

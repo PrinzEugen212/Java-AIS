@@ -40,7 +40,7 @@
                   </VBox>
                   <VBox layoutX="20.0" layoutY="181.0" spacing="5.0">
                      <children>
-                        <Label text="Дата рождения" />
+                        <Label text="Дата рождения*" />
                         <DatePicker fx:id="dpBirthDate" />
                      </children>
                   </VBox>

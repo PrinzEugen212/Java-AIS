@@ -24,7 +24,10 @@
             <Button mnemonicParsing="false" onAction="#onForm" text="Сформировать" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
-      <TableView fx:id="tvTable" prefWidth="4096.0" VBox.vgrow="ALWAYS" />
+      <TableView fx:id="tvTable" prefWidth="4096.0" VBox.vgrow="ALWAYS">
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy></TableView>
       <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="20.0">
          <children>
             <Label fx:id="lCount" text="Label" />

@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -30,10 +31,10 @@ import java.util.*;
  * Контроллер для формы обозревателя БД
  */
 public class DBViewController implements Initializable {
-
     private final List<Integer> idList = new ArrayList<>();
     public Model model;
     public TableView<List<StringProperty>> tTable;
+    public Button bEmp;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -44,6 +45,12 @@ public class DBViewController implements Initializable {
         }
     }
 
+    public void setEmployee(Employee employee){
+        if (employee.Admin == false){
+            bEmp.setDisable(true);
+            bEmp.setVisible(false);
+        }
+    }
     public void onClients(ActionEvent actionEvent) throws SQLException {
         ResultSet set = DB.getTable("Clients");
         DisplaySet(set);
@@ -84,7 +91,7 @@ public class DBViewController implements Initializable {
         tTable.getItems().clear();
         int count = set.getMetaData().getColumnCount();
         for (int i = 2; i < count + 1; i++) {
-            TableColumn<List<StringProperty>, String> column = new TableColumn<>(set.getMetaData().getColumnName(i));
+            TableColumn<List<StringProperty>, String> column = new TableColumn<>(set.getMetaData().getColumnLabel(i));
             int finalI = i;
             column.setCellValueFactory(data -> data.getValue().get(finalI - 1));
             tTable.getColumns().add(column);
@@ -145,7 +152,9 @@ public class DBViewController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(Main.class.getResource("edit/editAnimal-view.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(fxmlLoader.load(), 800, 600));
+            stage.setScene(new Scene(fxmlLoader.load(), 800, 400));
+            stage.setTitle("Изменение питомица");
+            stage.setResizable(false);
             EditAnimalController controller = fxmlLoader.getController();
             controller.setAnimal(animal);
             stage.showAndWait();
@@ -163,7 +172,9 @@ public class DBViewController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(Main.class.getResource("edit/editClient-view.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(fxmlLoader.load(), 800, 600));
+            stage.setScene(new Scene(fxmlLoader.load(), 600, 200));
+            stage.setTitle("Изменение клиента");
+            stage.setResizable(false);
             EditClientController controller = fxmlLoader.getController();
             controller.setClient(client);
             stage.showAndWait();
@@ -181,7 +192,9 @@ public class DBViewController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(Main.class.getResource("edit/editEmployee-view.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(fxmlLoader.load(), 800, 600));
+            stage.setScene(new Scene(fxmlLoader.load(), 700, 450));
+            stage.setTitle("Изменение сотрудника");
+            stage.setResizable(false);
             EditEmployeeController controller = fxmlLoader.getController();
             controller.setEmployee(employee);
             stage.showAndWait();
@@ -218,8 +231,9 @@ public class DBViewController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(Main.class.getResource("edit/editProcedure-view.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(fxmlLoader.load(), 800, 600));
-
+            stage.setScene(new Scene(fxmlLoader.load(), 400, 200));
+            stage.setTitle("Изменение процедуры");
+            stage.setResizable(false);
             EditProcedureController controller = fxmlLoader.getController();
             controller.setProcedure(procedure);
             stage.showAndWait();
